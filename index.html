@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Curricular - Derecho UA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .semestre {
+      margin-bottom: 30px;
+    }
+    .titulo-semestre {
+      font-size: 1.5em;
+      background: #343a40;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .cursos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .curso {
+      background: white;
+      border-left: 6px solid #0d6efd;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .curso:hover {
+      background: #e7f1ff;
+    }
+    .popup, .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 10;
+    }
+    .overlay {
+      background: rgba(0,0,0,0.5);
+      z-index: 9;
+    }
+    .popup {
+      top: 20%;
+      left: 25%;
+      width: 50%;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    .popup h2 {
+      margin-top: 0;
+    }
+    .popup button {
+      margin-top: 15px;
+      padding: 8px 15px;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .popup button:hover {
+      background: #084298;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular Interactiva - Derecho UA</h1>
+
+  <div id="contenedor"></div>
+
+  <div class="overlay" id="overlay" onclick="cerrarDetalle()"></div>
+  <div class="popup" id="popup">
+    <h2 id="cursoTitulo"></h2>
+    <p id="cursoDescripcion"></p>
+    <button onclick="cerrarDetalle()">Cerrar</button>
+  </div>
+
+  <script>
+    const malla = [
+      {
+        nivel: 'PRIMER NIVEL',
+        cursos: [
+          { nombre: 'Historia del Derecho', creditos: 5, categoria: 'Básica', descripcion: 'Abre Seminario de Investigación Jurídica, Clínica Jurídica (A+S) y Taller de Integración III (Ev. Ciclo)' },
+          { nombre: 'Historia y Evolución de las Instituciones Civiles', creditos: 5, categoria: 'Básica', descripcion: 'Abre Acto Jurídico, Bienes...' },
+          { nombre: 'Derecho Político', creditos: 5, categoria: 'Básica', descripcion: 'Abre Teoría Constitucional, Derecho Constitucional Orgánico...' },
+          { nombre: 'Introducción a la Economía', creditos: 5, categoria: 'Básica', descripcion: 'Abre Seminario de Investigación Jurídica...' },
+          { nombre: 'Introducción al Derecho', creditos: 7, categoria: 'Profesional', descripcion: 'Abre Organización y Atribuciones de los Tribunales, Teoría del Delito...' },
+          { nombre: 'Electivo de Comunicación', creditos: 3, categoria: 'General', descripcion: 'Abre Seminario de Investigación Jurídica...' }
+        ]
+      },
+      {
+        nivel: 'SEGUNDO NIVEL',
+        cursos: [
+          { nombre: 'Historia Institucional de Chile', creditos: 5, categoria: 'Básica', descripcion: 'Abre Seminario de Investigación Jurídica...' },
+          { nombre: 'Fundamentos Filosóficos del Derecho', creditos: 6, categoria: 'Básica', descripcion: 'Abre Seminario de Investigación Jurídica...' },
+          { nombre: 'Teoría de la Ley y las Personas', creditos: 6, categoria: 'Profesional', descripcion: 'Abre Bienes, Derecho de Familia...' },
+          { nombre: 'Teoría Constitucional', creditos: 6, categoria: 'Profesional', descripcion: 'Abre Derecho y Garantías Constitucionales...' },
+          { nombre: 'Argumentación Jurídica y Debate', creditos: 4, categoria: 'Profesional', descripcion: 'Abre Seminario de Investigación Jurídica...' },
+          { nombre: 'Electivo de Comunicación', creditos: 3, categoria: 'General', descripcion: 'Abre Derecho Sucesorio...' }
+        ]
+      },
+      // Aquí continúan los niveles 3 al 10...
+    ];
+
+    const contenedor = document.getElementById('contenedor');
+
+    malla.forEach(nivel => {
+      const divNivel = document.createElement('div');
+      divNivel.className = 'semestre';
+      divNivel.innerHTML = `<div class="titulo-semestre">${nivel.nivel}</div>`;
+
+      const cursosDiv = document.createElement('div');
+      cursosDiv.className = 'cursos';
+
+      nivel.cursos.forEach(curso => {
+        const cursoDiv = document.createElement('div');
+        cursoDiv.className = 'curso';
+        cursoDiv.innerHTML = `<strong>${curso.nombre}</strong><br>${curso.creditos} créditos<br><em>${curso.categoria}</em>`;
+        cursoDiv.onclick = () => mostrarDetalle(curso.nombre, curso.descripcion);
+        cursosDiv.appendChild(cursoDiv);
+      });
+
+      divNivel.appendChild(cursosDiv);
+      contenedor.appendChild(divNivel);
+    });
+
+    function mostrarDetalle(titulo, descripcion) {
+      document.getElementById('cursoTitulo').textContent = titulo;
+      document.getElementById('cursoDescripcion').textContent = descripcion;
+      document.getElementById('popup').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+
+    function cerrarDetalle() {
+      document.getElementById('popup').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
